@@ -4,8 +4,9 @@
 
 1、密里根油滴实验（仅针对2020年春季线上仿真实验）：<br>
 --
-在MillikanOilDrop文件夹下面的MillikanOilDropData.txt里添加实验数据，数据之间以空格隔开。<br>
-第一列是电压，后面八列是时间：<br>
+在MillikanOilDrop文件夹下面的MillikanOilDropData.xlsx里按照行与列的标签添加实验数据。<br>
+在MillikanOilDrop文件夹下面的MillikanOilDrop.txt中修改实验所需的参数，原文件中数据、符号之间的空格请务必保留。<br>
+* 数据中第一列是电压，后面八列是时间：<br>
 * 第一、四、七……行是静态法中的下降时间。<br>
 * 第二、五、八……行是动态法中的上升时间（电压是上升电压不是平衡电压）。<br>
 * 第三、六、九……行是动态法中的下降时间（这几行的电压没用）。<br>
