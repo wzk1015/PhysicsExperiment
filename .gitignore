@@ -1,3 +1,12 @@
+# runtime temp files
 **/__pycache__/
-.idea
-SolarBattery/out.xlsx
+**/*.spec
+**/build/
+**/dist/
+**/venv/
+
+# ide configures
+./.idea/
+
+# useless files
+./SolarBattery/out.xlsx
