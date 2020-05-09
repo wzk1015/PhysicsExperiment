@@ -1,10 +1,10 @@
 # 密里根油滴实验（目前缺少不确定度计算的部分）
-import GeneralMethod.GeneralMethod as gm
+import GeneralMethod.PyCalcLib as gm
 import math
 import xlrd
 
 
-class Millikan:
+class Millikan(gm.Method):
 	def __init__(self):
 		data = Millikan.get_data()
 		[self.volt_list, self.time_list] = Millikan.get_exp_data()
@@ -88,14 +88,14 @@ class Millikan:
 		res_list = []
 		for i in range(len(self.volt_list)):
 			if i % 3 == 0:  # 处理静态法数据
-				tf = gm.average(self.time_list[i])
+				tf = self.average(self.time_list[i])
 				qc = Millikan.calculate_q(self, 0, tf, self.volt_list[i], 1)
 				ec, en, err = Millikan.calculate_e(self, qc)
 				res = [tf, qc, ec, en, err, 1]
 				res_list.append(res)
 			elif i % 3 == 1:    # 处理动态法数据
-				tr = gm.average(self.time_list[i])
-				tf = gm.average(self.time_list[i+1])
+				tr = self.average(self.time_list[i])
+				tf = self.average(self.time_list[i+1])
 				qc = Millikan.calculate_q(self, tr, tf, 1.5 * self.volt_list[i], 2)
 				ec, en, err = Millikan.calculate_e(self, qc)
 				res = [tr, tf, qc, ec, en, err, 2]
