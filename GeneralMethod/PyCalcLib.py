@@ -1,12 +1,12 @@
-import numpy as np
+from numpy import asarray, linspace, sqrt, polyfit, poly1d, float
 from mpl_toolkits.axisartist.axislines import SubplotZero
-import sympy as sp
+from sympy import symbols, diff, sympify, integrate
 from matplotlib import pyplot as plt
 from scipy.optimize import fsolve
 from scipy.misc import derivative as dx
 
 
-class Calculus: # 一元微积分计算
+class Calculus:  # 一元微积分计算
 	"""
 	定积分
 	@param
@@ -18,8 +18,8 @@ class Calculus: # 一元微积分计算
 	"""
 	@staticmethod
 	def definite_integral(expression, lower, upper):
-		x = sp.symbols('x')
-		return sp.integrate(expression, (x, lower, upper))
+		x = symbols('x')
+		return integrate(expression, (x, lower, upper))
 
 	'''
 	不定积分
@@ -30,8 +30,8 @@ class Calculus: # 一元微积分计算
 	'''
 	@staticmethod
 	def indefinite_integral(expression):
-		x = sp.symbols('x')
-		return sp.integrate(expression, x)
+		x = symbols('x')
+		return integrate(expression, x)
 
 	'''
 	求导函数
@@ -42,8 +42,8 @@ class Calculus: # 一元微积分计算
 	'''
 	@staticmethod
 	def derivative(expression):
-		x = sp.symbols('x')
-		return sp.diff(expression, x)
+		x = symbols('x')
+		return diff(expression, x)
 
 	'''
 	求导数
@@ -67,8 +67,8 @@ class Calculus: # 一元微积分计算
 	'''
 	@staticmethod
 	def f(expression, value):
-		x = sp.symbols('x')
-		return sp.sympify(expression).evalf(subs={x: value})
+		x = symbols('x')
+		return sympify(expression).evalf(subs={x: value})
 
 
 class InstrumentError:  # 仪器误差限计算
@@ -393,13 +393,13 @@ class Fitting:  # 拟合计算
 	"""
 	@staticmethod
 	def linear(X, Y, show_plot=False):
-		X, Y = np.asarray(X), np.asarray(Y)
+		X, Y = asarray(X), asarray(Y)
 		if len(X.shape) != 1 or len(Y.shape) != 1:
 			raise ValueError("The dimension of X and Y must be both 1")
 		if X.shape[0] != Y.shape[0]:
 			raise ValueError("The length of X and Y must be equal")
-		X = X.astype(np.float)
-		Y = Y.astype(np.float)
+		X = X.astype(float)
+		Y = Y.astype(float)
 		XY = X * Y
 		XY_mean = XY.mean()
 		X_mean = X.mean()
@@ -428,21 +428,21 @@ class Fitting:  # 拟合计算
 	一个二元组(p, f)，其中p为系数数组，顺序为从常数项到高次项, f为一个函数(Callable)，即拟合的多项式
 	'''
 	@staticmethod
-	def poly(X, Y, deg, show_plot=False):
-		X, Y = np.asarray(X), np.asarray(Y)
-		if len(X.shape) != 1 or len(Y.shape) != 1:
+	def poly(x, y, deg, show_plot=False):
+		x, y = asarray(x), asarray(y)
+		if len(x.shape) != 1 or len(y.shape) != 1:
 			raise ValueError("The dimension of X and Y must be both 1")
-		if X.shape[0] != Y.shape[0]:
+		if x.shape[0] != y.shape[0]:
 			raise ValueError("The length of X and Y must be equal")
-		p = np.polyfit(X, Y, deg)  # 系数
-		f = np.poly1d(p)
+		p = polyfit(x, y, deg)  # 系数
+		f = poly1d(p)
 		if show_plot:
-			xleft, xright = X.min(), X.max()
-			XX = np.linspace(xleft, xright)
+			x_left, x_right = min(X), max(X)
+			xx = linspace(x_left, x_right)
 			# plt.clf()
 			plt.figure().canvas.set_window_title("多项式拟合")
-			plt.scatter(X, Y, marker='+')
-			plt.plot(XX, f(XX), c='red', linewidth=1)
+			plt.scatter(x, y, marker='+')
+			plt.plot(xx, f(xx), c='red', linewidth=1)
 			plt.show()
 		return p, f
 
@@ -454,28 +454,25 @@ class Fitting:  # 拟合计算
 	一个二元组(a, b)，代表 y = a + bx中的a, b
 	'''
 	@staticmethod
-	def successive_difference(X, Y):
-		if len(X) != len(Y):
+	def successive_difference(x, y):
+		if len(x) != len(y):
+			print("X数组与Y数组长度不相等，无法进行逐差法计算")
 			return
-		if len(X) & 1 != 0:
-			X.pop()
-			Y.pop()
-		i = 0
-		n = int(len(X) / 2)
+		if len(x) & 1 != 0:
+			x.pop()
+			y.pop()
+		n = int(len(x) / 2)
 		sumd = 0
-		for item in X:
+		for i in range(len(x)):
 			if i == n:
 				break
-			sumd += (Y[n + i] - Y[i]) / (X[n + i] - X[i])
-			i += 1
+			sumd += (y[n + i] - y[i]) / (x[n + i] - x[i])
 		b = (1 / n) * sumd
 		sumx = 0
 		sumy = 0
-		i = 0
-		for item in X:
-			sumx += X[i]
-			sumy += Y[i]
-			i += 1
+		for i in range(len(x)):
+			sumx += x[i]
+			sumy += y[i]
 		a = (1 / (2 * n)) * (sumy - b * sumx)
 		return a, b
 
@@ -492,7 +489,7 @@ class Fitting:  # 拟合计算
 		fig = plt.figure(1, (10, 6))
 		ax = SubplotZero(fig, 1, 1, 1)
 		fig.add_subplot(ax)
-		x0 = np.linspace(section[0], section[1], 1000)
+		x0 = linspace(section[0], section[1], 1000)
 		y0 = []
 		for i in range(1000):
 			y0.append(func(x0[i]))
@@ -517,10 +514,10 @@ class Fitting:  # 拟合计算
 		ax = SubplotZero(fig, 1, 1, 1)
 		fig.add_subplot(ax)
 		x0 = np.linspace(section[0], section[1], 1000)
-		x = sp.symbols('x')
+		x = symbols('x')
 		y0 = []
 		for i in range(1000):
-			y0.append(sp.sympify(expression).evalf(subs={x: x0[i]}))
+			y0.append(sympify(expression).evalf(subs={x: x0[i]}))
 		ax.axis["xzero"].set_visible(True)
 		ax.axis["xzero"].label.set_color('green')
 		ax.axis["yzero"].set_visible(True)
@@ -553,11 +550,11 @@ class Fitting:  # 拟合计算
 				plt.ioff()
 				plt.show()
 
-		X = np.linspace(section[0], section[1])
+		x = np.linspace(section[0], section[1])
 		fig = plt.figure()
 		plt.rcParams['font.sans-serif'] = 'SimSun'
-		plt.plot(X, func1(X))
-		plt.plot(X, func2(X))
+		plt.plot(x, func1(x))
+		plt.plot(x, func2(x))
 		plt.title("请用鼠标点击函数交点")
 		fig.canvas.set_window_title("函数图象交点查看器")
 		fig.canvas.mpl_connect('button_press_event', onPress)
