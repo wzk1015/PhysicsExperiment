@@ -26,7 +26,13 @@ exe文件运行起来暂时会有点慢，以后我们会优化这个问题。<b
 
 by wzk
 
+## 3、弗兰克赫兹实验
 
+* 将`Frank_Hertz/frank_hertz.xlsx`根据提示填写
+* 打开`main.exe`输入 3 ，或执行`Frank_Hertz/frank_hertz.py`
+* 结果输出至`Frank_Hertz/frank_answers.xls`
+
+by GQ
 
 助大家实验顺利！
 ---
