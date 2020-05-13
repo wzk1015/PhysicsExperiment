@@ -22,7 +22,7 @@ exe文件运行起来暂时会有点慢，以后我们会优化这个问题。<b
 
 * 将`SolarBattery/in.xlsx`中蓝底单元格填好
 * 打开`main.exe`输入2，或进入SolarBattery目录直接python运行`SolarBattery.py`
-* 结果输出至``SolarBattery/out.xlsx`
+* 结果输出至`SolarBattery/out.xlsx`
 
 by wzk
 
