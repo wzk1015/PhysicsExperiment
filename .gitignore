@@ -9,5 +9,14 @@
 ./.idea/
 
 # useless files
-/SolarBattery/out.xlsx
 /GeneralMethod/gmain.py
+
+# __pycache__
+/__pycache__
+/Frank_Hertz/__pycache__
+/GeneralMethod/__pycache__
+/MillikanOilDrop/__pycache__
+/SolarBattery/__pycache__
+
+# outputfile
+/SolarBattery/out.xlsx
