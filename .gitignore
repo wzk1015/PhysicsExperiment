@@ -10,3 +10,4 @@
 
 # useless files
 ./SolarBattery/out.xlsx
+./GeneralMethod/gmain.py

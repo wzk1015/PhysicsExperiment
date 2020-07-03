@@ -1,4 +1,4 @@
-from numpy import asarray, linspace, sqrt, polyfit, poly1d, float
+from numpy import asarray, linspace, sqrt, polyfit, poly1d, float, sqrt
 from mpl_toolkits.axisartist.axislines import SubplotZero
 from sympy import symbols, diff, sympify, integrate
 from matplotlib import pyplot as plt
@@ -410,7 +410,7 @@ class Fitting:  # 拟合计算
 		b_hat = Y_mean - a_hat * X_mean
 
 		r = (((X - X_mean) * (Y - Y_mean)).sum()) / (
-				np.sqrt(((X - X_mean) ** 2).sum()) * np.sqrt(((Y - Y_mean) ** 2).sum()))
+				sqrt(((X - X_mean) ** 2).sum()) * sqrt(((Y - Y_mean) ** 2).sum()))
 		if show_plot:
 			plt.figure().canvas.set_window_title("一元线性回归拟合")
 			plt.scatter(X, Y, marker='+')
@@ -437,7 +437,7 @@ class Fitting:  # 拟合计算
 		p = polyfit(x, y, deg)  # 系数
 		f = poly1d(p)
 		if show_plot:
-			x_left, x_right = min(X), max(X)
+			x_left, x_right = min(x), max(x)
 			xx = linspace(x_left, x_right)
 			# plt.clf()
 			plt.figure().canvas.set_window_title("多项式拟合")
@@ -513,7 +513,7 @@ class Fitting:  # 拟合计算
 		fig = plt.figure(1, (10, 6))
 		ax = SubplotZero(fig, 1, 1, 1)
 		fig.add_subplot(ax)
-		x0 = np.linspace(section[0], section[1], 1000)
+		x0 = linspace(section[0], section[1], 1000)
 		x = symbols('x')
 		y0 = []
 		for i in range(1000):
@@ -529,7 +529,7 @@ class Fitting:  # 拟合计算
 	求函数图象的交点
 	使用方法：调用此函数会先自动绘制两个函数在给定范围的图象，用鼠标点击交点则屏幕上可以显示出交点坐标
 	@param
-	func1, func2: 两个一元函数(Callable)
+	func1, func2: 两个一元函数, 为python中可以调用的函数，参数为一个自变量，返回值为函数值
 	range: 一个二元组，表示x的范围
 	@return
 	void
@@ -537,6 +537,8 @@ class Fitting:  # 拟合计算
 	'''
 	@staticmethod
 	def intersection(func1, func2, section):
+		import warnings
+		warnings.filterwarnings('ignore')
 		fdif = lambda x: func1(x) - func2(x)
 
 		def onPress(event):
@@ -550,9 +552,10 @@ class Fitting:  # 拟合计算
 				plt.ioff()
 				plt.show()
 
-		x = np.linspace(section[0], section[1])
+		x = linspace(section[0], section[1])
 		fig = plt.figure()
-		plt.rcParams['font.sans-serif'] = 'SimSun'
+		plt.rcParams['font.sans-serif'] = ['SimHei', 'SimSun'] # 使matplotlib支持中文字体
+		plt.rcParams['axes.unicode_minus'] = False # 正常显示负号
 		plt.plot(x, func1(x))
 		plt.plot(x, func2(x))
 		plt.title("请用鼠标点击函数交点")
