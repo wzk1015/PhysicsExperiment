@@ -9,5 +9,5 @@
 ./.idea/
 
 # useless files
-./SolarBattery/out.xlsx
-./GeneralMethod/gmain.py
+/SolarBattery/out.xlsx
+/GeneralMethod/gmain.py
