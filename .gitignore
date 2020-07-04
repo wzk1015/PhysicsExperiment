@@ -9,7 +9,14 @@
 ./.idea/
 
 # useless files
+
+#GeneralMethod
 /GeneralMethod/gmain.py
+
+#reportwriter
+/reportwriter/*
+!/reportwriter/ReportWriter.py
+!/reportwriter/demo.docx
 
 # __pycache__
 /__pycache__
@@ -20,3 +27,4 @@
 
 # outputfile
 /SolarBattery/out.xlsx
+
