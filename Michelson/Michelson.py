@@ -1,5 +1,5 @@
-import xlrd, xlwt
-from xlutils.copy import copy as xlscopy
+import xlrd
+# from xlutils.copy import copy as xlscopy
 import shutil
 import os
 from numpy import sqrt, abs
@@ -74,40 +74,43 @@ class Michelson:
     '''
     # 对于数据处理简单的实验，可以根据此格式，先计算数据再算不确定度，若数据处理复杂也可每计算一个物理量就算一次不确定度
     def calc_uncertainty(self):
+        # 计算光程差d的a,b及总不确定度
         ua_d = Method.a_uncertainty(self.data['d_list']) # 这里容易写错，一定要用原始数据的数组
         ub_d = 0.00005 / sqrt(3)
         u_d = sqrt(ua_d ** 2 + ub_d ** 2)
         self.data.update({"ua_d":ua_d, "ub_d":ub_d, "u_d":u_d})
+        # 计算圈数N的不确定度
         N = self.data['N']
         u_N = 1 / sqrt(3)
         self.data['u_N'] = u_N
         d, N = self.data['d'], self.data['N']
+        # 波长的不确定度合成
         u_lbd_lbd = sqrt((u_d / d) ** 2 + (u_N / N) ** 2)
         lbd = self.data['lbd']
         u_lbd = u_lbd_lbd * lbd
         self.data.update({"u_lbd_lbd": u_lbd_lbd, "u_lbd": u_lbd})
-        # 输出一下最终结果
+        # 输出带不确定度的最终结果
         bse, pwr = Method.scientific_notation(u_lbd)
-        lbd_f = int(lbd * (10 ** pwr)) / (10 ** pwr)
-        self.data['final'] = "%.0f±%.0f" % (lbd_f, bse)
+        lbd_f = int(lbd * (10 ** pwr)) / (10 ** pwr) # 保留有效数字，截断处理
+        self.data['final'] = "%f±%.0f" % (lbd_f, bse)
     '''
     填充实验报告
     调用ReportWriter类，将数据填入Word文档格式的实验报告中
     '''
     def fill_report(self):
-        # 原始数据d
+        # 表格：原始数据d
         for i, di in enumerate(self.data['d_list']):
-            # print(i + 1, di)
             self.report_data[str(i + 1)] = "%.5f" % (di) # 一定都是字符串类型
-        # 逐差法计算5Δd
+        # 表格：逐差法计算5Δd
         for i, ddi in enumerate(self.data['dif_d']):
             self.report_data["5d-%d" % (i + 1)] = "%.5f" % (ddi)
+        # 最终结果
         self.report_data['final'] = self.data['final']
-        # self.report_data['lbd'] = "%.0f" % (self.data['lbd'] * 1e6)
         # 将各个变量以及不确定度的结果导入实验报告
         for key in self.report_data_keys:
             if not key in self.report_data.keys() and key in self.data.keys():
                 self.report_data[key] = "%.5f" % (self.data[key])
+        # 调用ReportWriter类
         RW = ReportWriter()
         RW.load_replace_kw(self.report_data)
         RW.fill_report("Michelson_empty.docx", "Michelson_out.docx")
