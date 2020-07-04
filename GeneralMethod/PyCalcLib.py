@@ -1,4 +1,4 @@
-from numpy import asarray, linspace, sqrt, polyfit, poly1d, float, sqrt
+from numpy import asarray, linspace, sqrt, polyfit, poly1d, float, sqrt, log10, floor
 from mpl_toolkits.axisartist.axislines import SubplotZero
 from sympy import symbols, diff, sympify, integrate
 from matplotlib import pyplot as plt
@@ -636,4 +636,39 @@ class Method:
     def a_uncertainty(a):
         abu = (Method.variance(a) / (len(a) - 1)) ** (1 / 2)
         return abu
-
+    '''
+    逐差法求相邻数据的差值(与Fitting中的逐差法略有不同)
+    @param
+    x: 一维数据数组
+    @return
+    一个二元组(dif_x, aver_x)
+    dif_x: 长度为x折半的数组，为逐差相减的结果
+    aver_x: 逐差法求得的平均值
+    '''
+    @staticmethod
+    def successive_diff(x):
+        sz = len(x)
+        n = sz // 2
+        x1 = asarray(x[:n])
+        x2 = asarray(x[(n + (sz % 2)):])
+        dif_x = x2 - x1
+        dif_x = abs(dif_x)
+        aver_x = Method.average(dif_x)
+        aver_x = abs(aver_x) # 取绝对值
+        return dif_x, aver_x
+    '''
+    科学计数法
+    @param
+    x: 一个浮点数
+    @return
+    一个二元组(base, pwr)
+    base: 底数
+    pwr: 10的次幂
+    '''
+    @staticmethod
+    def scientific_notation(x):
+        if x == 0:
+            return 0, 0
+        pwr = int(floor(log10(x)))
+        base = x / (10 ** pwr)
+        return base, pwr
