@@ -2,6 +2,7 @@
 import MillikanOilDrop.MillikanOilDrop as Millikan
 import SolarBattery.SolarBattery as sb
 import Frank_Hertz.frank_hertz as fh
+import Michelson.Michelson as Michelson
 
 
 if __name__ == '__main__':
@@ -13,7 +14,8 @@ if __name__ == '__main__':
 			print("\t1、迈克尔逊干涉实验（1091）")
 			exp = input("请输入实验序号：")
 			if exp == "1":
-				Millikan.Millikan()
+				# Millikan.Millikan()
+				Michelson.Michelson()
 		elif term == "2":
 			print("目前基物实验2中可计算的实验：")
 			print("\t1、密里根油滴实验")
