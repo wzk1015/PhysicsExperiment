@@ -22,6 +22,7 @@ class ReportWriter:
         word.Selection.Find.ClearFormatting()
         word.Selection.Find.Replacement.ClearFormatting()
         for rep_key in self.replace_words.keys():
+            # print("Replacing #%s# to %s" % (rep_key, self.replace_words[rep_key]))
             word.Selection.Find.Execute( '#'+rep_key+'#' ,False,False,False,False,False,True,client.constants.wdFindContinue,False,self.replace_words[rep_key],client.constants.wdReplaceAll)
         doc.Close()
         word.Quit()
