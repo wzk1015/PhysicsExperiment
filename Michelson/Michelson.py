@@ -12,6 +12,7 @@ from reportwriter.ReportWriter import ReportWriter
 
 class Michelson:
     # 需往实验报告中填的空的key，这些key在Word模板中以#号包含，例如#1#, #delta_d#, #final#
+    # 除了表格中的项以外，其余的key和程序中用到的变量名保持一致
     report_data_keys = [
         "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
         "5d-1", "5d-2", "5d-3", "5d-4", "5d-5", # 逐差法；5Δd
@@ -20,6 +21,7 @@ class Michelson:
         "u_N", "u_lbd_lbd", "u_lbd",  # 不确定度的合成
         "final" # 最终结果
     ]
+    # 可能用到的文件名常量
     PREVIEW_FILENAME = "Preview.pdf"
     DATA_SHEET_FILENAME = "data.xlsx"
     REPORT_TEMPLATE_FILENAME = "Michelson_empty.docx"
@@ -69,11 +71,11 @@ class Michelson:
     def input_data(self, filename):
         ws = xlrd.open_workbook(filename).sheet_by_name('Michelson')
         # 从excel中读取数据
-        dlist = []
+        d_arr = []
         for row in [2, 4]:
             for col in range(1, 6):
-                dlist.append(float(ws.cell_value(row, col))) # 从excel取出来的数据，加个类型转换靠谱一点
-        self.data['d_list'] = dlist # 存储从表格中读入的数据
+                d_arr.append(float(ws.cell_value(row, col))) # 从excel取出来的数据，加个类型转换靠谱一点
+        self.data['d_arr'] = d_arr # 存储从表格中读入的数据
     '''
     进行数据处理
     由于1091实验的数据处理非常非常简单，为节约代码量，将全部数据处理放在一个函数内完成.
@@ -84,11 +86,11 @@ class Michelson:
         N = 100
         self.data['N'] = N
         # 逐差法计算100圈光程差d
-        dif_d, d = Method.successive_diff(self.data['d_list'])
-        self.data['dif_d'] = dif_d
+        dif_d_arr, d = Method.successive_diff(self.data['d_arr'])
+        self.data['dif_d_arr'] = dif_d_arr
         self.data['d'] = d
         # 按公式计算待测光的波长
-        lbd = 2 * d / (len(dif_d) * N)
+        lbd = 2 * d / (len(dif_d_arr) * N)
         lbd = lbd * 1e6
         self.data['lbd'] = lbd
     '''
@@ -97,7 +99,7 @@ class Michelson:
     # 对于数据处理简单的实验，可以根据此格式，先计算数据再算不确定度，若数据处理复杂也可每计算一个物理量就算一次不确定度
     def calc_uncertainty(self):
         # 计算光程差d的a,b及总不确定度
-        ua_d = Method.a_uncertainty(self.data['d_list']) # 这里容易写错，一定要用原始数据的数组
+        ua_d = Method.a_uncertainty(self.data['d_arr']) # 这里容易写错，一定要用原始数据的数组
         ub_d = 0.00005 / sqrt(3)
         u_d = sqrt(ua_d ** 2 + ub_d ** 2)
         self.data.update({"ua_d":ua_d, "ub_d":ub_d, "u_d":u_d})
@@ -112,6 +114,7 @@ class Michelson:
         u_lbd = u_lbd_lbd * lbd
         self.data.update({"u_lbd_lbd": u_lbd_lbd, "u_lbd": u_lbd})
         # 输出带不确定度的最终结果
+        # TODO: 输出最终结果的修约方法稍稍有点问题，待修改
         bse, pwr = Method.scientific_notation(u_lbd)
         lbd_f = int(lbd * (10 ** pwr)) / (10 ** pwr) # 保留有效数字，截断处理
         self.data['final'] = "%.0f±%.0f" % (lbd_f, bse)
@@ -121,11 +124,11 @@ class Michelson:
     '''
     def fill_report(self):
         # 表格：原始数据d
-        for i, di in enumerate(self.data['d_list']):
-            self.report_data[str(i + 1)] = "%.5f" % (di) # 一定都是字符串类型
+        for i, d_i in enumerate(self.data['d_arr']):
+            self.report_data[str(i + 1)] = "%.5f" % (d_i) # 一定都是字符串类型
         # 表格：逐差法计算5Δd
-        for i, ddi in enumerate(self.data['dif_d']):
-            self.report_data["5d-%d" % (i + 1)] = "%.5f" % (ddi)
+        for i, dif_d_i in enumerate(self.data['dif_d_arr']):
+            self.report_data["5d-%d" % (i + 1)] = "%.5f" % (dif_d_i)
         # 最终结果
         self.report_data['final'] = self.data['final']
         # 将各个变量以及不确定度的结果导入实验报告
