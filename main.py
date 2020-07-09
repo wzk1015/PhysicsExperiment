@@ -1,9 +1,10 @@
 # 主程序，只包括选择实验和运行函数，以后会加上说明一类的
-import MillikanOilDrop.MillikanOilDrop as Millikan
-import SolarBattery.SolarBattery as sb
-import Frank_Hertz.frank_hertz as fh
-import Michelson.Michelson as Michelson
+import Experiment2.MillikanOilDrop.MillikanOilDrop as Millikan
+import Experiment2.SolarBattery.SolarBattery as sb
+import Experiment2.Frank_Hertz.frank_hertz as fh
+import Experiment1.phy1091.Michelson as Michelson
 
+# TODO: fix open file directory in each experiment
 
 if __name__ == '__main__':
 	# 主程序，只引用模块
