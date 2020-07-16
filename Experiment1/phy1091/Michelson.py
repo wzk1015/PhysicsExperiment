@@ -7,8 +7,7 @@ from numpy import sqrt, abs
 import sys
 sys.path.append('../..') # 如果最终要从main.py调用，则删掉这句
 from GeneralMethod.PyCalcLib import Method
-from reportwriter.ReportWriter import ReportWriter
-
+from GeneralMethod.Report import Report
 
 
 class Michelson:
@@ -24,8 +23,8 @@ class Michelson:
 
     PREVIEW_FILENAME = "Preview.pdf"
     DATA_SHEET_FILENAME = "data.xlsx"
-    REPORT_TEMPLATE_FILENAME = "Michelson_empty.docx"
-    REPORT_OUTPUT_FILENAME = "Michelson_out.docx"
+    REPORT_TEMPLATE_FILENAME = "../../Report/1091/Michelson/Michelson_empty.docx"
+    REPORT_OUTPUT_FILENAME = "../../Report/1091/Michelson/Michelson_out.docx"
 
     def __init__(self):
         self.data = {} # 存放实验中的各个物理量
@@ -145,7 +144,7 @@ class Michelson:
         self.report_data['u_lbd_lbd'] = "%.5f" % self.data['num_u_lbd_lbd']
         self.report_data['u_lbd'] = "%.5f" % self.data['num_u_lbd']
         # 调用ReportWriter类
-        RW = ReportWriter()
+        RW = Report()
         RW.load_replace_kw(self.report_data)
         RW.fill_report(self.REPORT_TEMPLATE_FILENAME, self.REPORT_OUTPUT_FILENAME)
 

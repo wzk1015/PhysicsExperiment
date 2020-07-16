@@ -7,14 +7,13 @@ demo_replace_dict = {
     "x": "996"
 }
 
-class ReportWriter:
-
+class Report:
     def __init__(self):
         self.replace_words = {}
     def load_replace_kw(self, rep: dict) :
         self.replace_words = rep
     def fill_report(self, in_fname, out_fname):
-        shutil.copy(in_fname, out_fname)
+        shutil.copy(in_fname, out_fname) # need full name
         word = client.gencache.EnsureDispatch("Word.Application")
         word.Visible = 0
         word.DisplayAlerts = 0
@@ -28,6 +27,6 @@ class ReportWriter:
         word.Quit()
 
 if __name__ == '__main__':
-    RW = ReportWriter()
+    RW = Report()
     RW.load_replace_kw(demo_replace_dict)
     RW.fill_report("demo.docx", "demo_filled.docx")
