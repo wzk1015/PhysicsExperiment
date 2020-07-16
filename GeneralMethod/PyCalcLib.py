@@ -644,6 +644,7 @@ class Method:
     一个二元组(dif_x, aver_x)
     dif_x: 长度为x折半的数组，为逐差相减的结果
     aver_x: 逐差法求得的平均值
+    注意：aver_x是逐差的平均值，不是最后的平均值
     '''
     @staticmethod
     def successive_diff(x):
@@ -654,7 +655,7 @@ class Method:
         dif_x = x2 - x1
         dif_x = abs(dif_x)
         aver_x = Method.average(dif_x)
-        aver_x = abs(aver_x) # 取绝对值
+        aver_x = abs(aver_x)  # 取绝对值
         return dif_x, aver_x
     '''
     科学计数法
@@ -672,3 +673,23 @@ class Method:
         pwr = int(floor(log10(x)))
         base = x / (10 ** pwr)
         return base, pwr
+    '''
+    获得最后数据
+    @param
+    res: 一个浮点数，代表最后结果
+    unc: 一个浮点数，代表不确定度
+    @return
+    一个三元组(fin, unc, pwr)
+    res_final: 结果最终表示
+    unc_final: 不确定度最终表示
+    pwr: 10的次幂
+    最后表示以结果为科学计数法参照（即res_final的范围为[0,10)）
+    '''
+    @staticmethod
+    def final_expression(res, unc):
+        unc_final, pwr_main = Method.scientific_notation(unc)
+        res_final = round(res / float(10 ** pwr_main))
+        unc_final, pwr_sub = Method.scientific_notation(unc_final)
+        res_final = res_final / (10 ** pwr_sub)
+        pwr = pwr_main + pwr_sub
+        return res_final, unc_final, pwr
