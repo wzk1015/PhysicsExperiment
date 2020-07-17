@@ -4,6 +4,8 @@ from sympy import symbols, diff, sympify, integrate
 from matplotlib import pyplot as plt
 from scipy.optimize import fsolve
 from scipy.misc import derivative as dx
+import os
+import subprocess
 
 
 class Calculus:  # 一元微积分计算
@@ -693,3 +695,17 @@ class Method:
         res_final = res_final / (10 ** pwr_sub)
         pwr = pwr_main + pwr_sub
         return res_final, unc_final, pwr
+
+    '''
+        打开文件
+        @param
+        file_path: 文件路径（相对路径）
+        @return
+        无
+        '''
+    @staticmethod
+    def start_file(file_path):
+        try:
+            os.startfile(os.path.abspath(file_path))
+        except:
+            subprocess.call(["open", os.path.abspath(file_path)])

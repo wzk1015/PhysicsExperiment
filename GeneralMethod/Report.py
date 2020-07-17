@@ -1,5 +1,5 @@
 import os, shutil
-from win32com import client # pip install pywin32
+from win32com import client  # pip install pywin32
 
 demo_replace_dict = {
     "1": "1.123", 
@@ -10,8 +10,10 @@ demo_replace_dict = {
 class Report:
     def __init__(self):
         self.replace_words = {}
+
     def load_replace_kw(self, rep: dict) :
         self.replace_words = rep
+
     def fill_report(self, in_fname, out_fname):
         shutil.copy(in_fname, out_fname) # need full name
         word = client.gencache.EnsureDispatch("Word.Application")

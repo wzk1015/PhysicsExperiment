@@ -3,12 +3,12 @@ import xlrd
 import shutil
 import os
 from numpy import sqrt, abs
-import subprocess
 
 import sys
 sys.path.append('../..') # 如果最终要从main.py调用，则删掉这句
 from GeneralMethod.PyCalcLib import Method
-from GeneralMethod.Report import Report
+from reportwriter.ReportWriter import ReportWriter
+
 
 
 class Michelson:
@@ -22,15 +22,15 @@ class Michelson:
         "final" # 最终结果
     ]
 
-    PREVIEW_FILENAME = "Preview.pdf"  # 预习报告模板文件的名称
-    DATA_SHEET_FILENAME = "data.xlsx"  # 数据填写表格的名称
-    REPORT_TEMPLATE_FILENAME = "Michelson_empty.docx"  # 实验报告模板（未填数据）的名称
-    REPORT_OUTPUT_FILENAME = "../../Report/Experiment1/1091Report.docx"  # 最后生成实验报告的相对路径
+    PREVIEW_FILENAME = "Preview.pdf"
+    DATA_SHEET_FILENAME = "data.xlsx"
+    REPORT_TEMPLATE_FILENAME = "Spectrometer_empty.docx"
+    REPORT_OUTPUT_FILENAME = "1071Report.docx"
 
     def __init__(self):
-        self.data = {} # 存放实验中的各个物理量
-        self.uncertainty = {} # 存放物理量的不确定度
-        self.report_data = {} # 存放需要填入实验报告的
+        self.data = {}  # 存放实验中的各个物理量
+        self.uncertainty = {}  # 存放物理量的不确定度
+        self.report_data = {}  # 存放需要填入实验报告的
         print("1091 迈克尔逊干涉仪实验\n1. 实验预习\n2. 数据处理")
         while True:
             try:
@@ -44,15 +44,15 @@ class Michelson:
         if oper == '1':
             print("现在开始实验预习")
             print("正在打开预习报告......")
-            Method.start_file(self.PREVIEW_FILENAME)
+            os.startfile(self.PREVIEW_FILENAME)
         elif oper == '2':
             print("现在开始数据处理")
             print("即将打开数据输入文件......")
             # 打开数据输入文件
-            Method.start_file(self.DATA_SHEET_FILENAME)
+            os.startfile(self.DATA_SHEET_FILENAME)
             input("输入数据完成后请保存并关闭excel文件，然后按回车键继续")
             # 从excel中读取数据
-            self.input_data("./"+self.DATA_SHEET_FILENAME) # './' is necessary when running this file, but should be removed if run main.py
+            self.input_data("./"+self.DATA_SHEET_FILENAME)  # './' is necessary when running this file, but should be removed if run main.py
             print("数据读入完毕，处理中......")
             # 计算物理量
             self.calc_data()
@@ -62,7 +62,7 @@ class Michelson:
             # 生成实验报告
             self.fill_report()
             print("实验报告生成完毕，正在打开......")
-            Method.start_file(self.REPORT_OUTPUT_FILENAME)
+            os.startfile(self.REPORT_OUTPUT_FILENAME)
             print("Done!")
 
     '''
@@ -76,8 +76,8 @@ class Michelson:
         list_d = []
         for row in [2, 4]:
             for col in range(1, 6):
-                list_d.append(float(ws.cell_value(row, col)))  # 从excel取出来的数据，加个类型转换靠谱一点
-        self.data['list_d'] = list_d  # 存储从表格中读入的数据
+                list_d.append(float(ws.cell_value(row, col))) # 从excel取出来的数据，加个类型转换靠谱一点
+        self.data['list_d'] = list_d # 存储从表格中读入的数据
     
     '''
     进行数据处理
@@ -145,7 +145,7 @@ class Michelson:
         self.report_data['u_lbd_lbd'] = "%.5f" % self.data['num_u_lbd_lbd']
         self.report_data['u_lbd'] = "%.5f" % self.data['num_u_lbd']
         # 调用ReportWriter类
-        RW = Report()
+        RW = ReportWriter()
         RW.load_replace_kw(self.report_data)
         RW.fill_report(self.REPORT_TEMPLATE_FILENAME, self.REPORT_OUTPUT_FILENAME)
 
