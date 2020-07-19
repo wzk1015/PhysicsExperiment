@@ -1,5 +1,6 @@
 import os, shutil
 from win32com import client  # pip install pywin32
+from docx import Document
 
 demo_replace_dict = {
     "1": "1.123", 
@@ -28,7 +29,8 @@ class Report:
         doc.Close()
         word.Quit()
 
+
 if __name__ == '__main__':
     RW = Report()
     RW.load_replace_kw(demo_replace_dict)
-    RW.fill_report("demo.docx", "demo_filled.docx")
+    RW.fill_report("../Report/Demo/demo.docx", "demo_filled.docx")
