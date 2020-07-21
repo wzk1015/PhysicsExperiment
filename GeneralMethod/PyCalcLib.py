@@ -681,20 +681,18 @@ class Method:
     res: 一个浮点数，代表最后结果
     unc: 一个浮点数，代表不确定度
     @return
-    一个三元组(fin, unc, pwr)
-    res_final: 结果最终表示
-    unc_final: 不确定度最终表示
-    pwr: 10的次幂
+    final: 一个字符串，最终结果
     最后表示以结果为科学计数法参照（即res_final的范围为[0,10)）
     '''
     @staticmethod
     def final_expression(res, unc):
-        unc_final, pwr_main = Method.scientific_notation(unc)
-        res_final = round(res / float(10 ** pwr_main))
-        unc_final, pwr_sub = Method.scientific_notation(unc_final)
-        res_final = res_final / (10 ** pwr_sub)
-        pwr = pwr_main + pwr_sub
-        return res_final, unc_final, pwr
+        unc_final, pwr = Method.scientific_notation(unc)
+        res_final = round(res / float(10 ** pwr), 0)
+        unc_final = round(unc_final, 0)
+        res_final = round(res_final * (10 ** pwr), -pwr)
+        unc_final = round(unc_final * (10 ** pwr), -pwr)
+        final = '(' + str(res_final) + '±' + str(unc_final) + ')'
+        return final
 
     '''
         打开文件
