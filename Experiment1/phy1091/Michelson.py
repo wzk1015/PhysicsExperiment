@@ -86,41 +86,38 @@ class Michelson:
     对于实验中重要的数据，采用dict对象self.data存储，方便其他函数共用数据
     '''
     def calc_data(self):
-        num_N = 100
-        self.data['num_N'] = num_N
+        N = 100
+        self.data['N'] = N
         # 逐差法计算100圈光程差d
-        list_dif_d, num_d = Method.successive_diff(self.data['list_d'])
+        list_dif_d, d = Method.successive_diff(self.data['list_d'])
         self.data['list_dif_d'] = list_dif_d
-        self.data['num_d'] = num_d
+        self.data['d'] = d
         # 按公式计算待测光的波长
-        num_lbd = 2 * num_d / (len(list_dif_d) * num_N)
-        num_lbd = num_lbd * 1e6
-        self.data['num_lbd'] = num_lbd
+        lbd = 2 * d / (len(list_dif_d) * N)
+        lbd = lbd * 1e6
+        self.data['lbd'] = lbd
     '''
     计算所有的不确定度
     '''
     # 对于数据处理简单的实验，可以根据此格式，先计算数据再算不确定度，若数据处理复杂也可每计算一个物理量就算一次不确定度
     def calc_uncertainty(self):
         # 计算光程差d的a,b及总不确定度
-        num_ua_d = Method.a_uncertainty(self.data['list_d']) # 这里容易写错，一定要用原始数据的数组
-        num_ub_d = 0.00005 / sqrt(3)
-        num_u_d = sqrt(num_ua_d ** 2 + num_ub_d ** 2)
-        self.data.update({"num_ua_d":num_ua_d, "num_ub_d":num_ub_d, "num_u_d":num_u_d})
+        ua_d = Method.a_uncertainty(self.data['list_d']) # 这里容易写错，一定要用原始数据的数组
+        ub_d = 0.00005 / sqrt(3)
+        u_d = sqrt(ua_d ** 2 + ub_d ** 2)
+        self.uncertainty.update({"ua_d":ua_d, "ub_d":ub_d, "u_d":u_d})
         # 计算圈数N的不确定度
-        num_N = self.data['num_N']
-        num_u_N = 1 / sqrt(3)
-        self.data['num_u_N'] = num_u_N
-        num_d, num_N = self.data['num_d'], self.data['num_N']
+        N = self.data['N']
+        u_N = 1 / sqrt(3)
+        self.uncertainty['u_N'] = u_N
+        d, N = self.data['d'], self.data['N']
         # 波长的不确定度合成
-        num_u_lbd_lbd = sqrt((num_u_d / num_d) ** 2 + (num_u_N / num_N) ** 2)
-        num_lbd = self.data['num_lbd']
-        num_u_lbd = num_u_lbd_lbd * num_lbd
-        self.data.update({"num_u_lbd_lbd": num_u_lbd_lbd, "num_u_lbd": num_u_lbd})
+        u_lbd_lbd = sqrt((u_d / d) ** 2 + (u_N / N) ** 2)
+        lbd = self.data['lbd']
+        u_lbd = u_lbd_lbd * lbd
+        self.uncertainty.update({"u_lbd_lbd": u_lbd_lbd, "u_lbd": u_lbd})
         # 输出带不确定度的最终结果: 不确定度保留一位有效数字, 物理量结果与不确定度首位有效数字对齐
-        # TODO: 输出最终结果的修约方法稍稍有点问题，待修改
-        num_u_lbd_1bit, pwr = Method.scientific_notation(num_u_lbd) # 将不确定度转化为只有一位有效数字的科学计数法
-        num_lbd_final = int(num_lbd * (10 ** pwr)) / (10 ** pwr) # 对物理量保留有效数字，截断处理
-        self.data['final'] = "%.0f±%.0f" % (num_lbd_final, num_u_lbd_1bit) # 这里稍微有点问题，待修改......
+        self.data['final'] = Method.final_expression(lbd, u_lbd)
     '''
     填充实验报告
     调用ReportWriter类，将数据填入Word文档格式的实验报告中
@@ -135,15 +132,15 @@ class Michelson:
         # 最终结果
         self.report_data['final'] = self.data['final']
         # 将各个变量以及不确定度的结果导入实验报告，在实际编写中需根据实验报告的具体要求设定保留几位小数
-        self.report_data['N'] = "%d" % self.data['num_N']
-        self.report_data['d'] = "%.5f" % self.data['num_d']
-        self.report_data['lbd'] = "%.2f" % self.data['num_lbd']
-        self.report_data['ua_d'] = "%.5f" % self.data['num_ua_d']
-        self.report_data['ub_d'] = "%.5f" % self.data['num_ub_d']
-        self.report_data['u_d'] = "%.5f" % self.data['num_u_d']
-        self.report_data['u_N'] = "%.5f" % self.data['num_u_N']
-        self.report_data['u_lbd_lbd'] = "%.5f" % self.data['num_u_lbd_lbd']
-        self.report_data['u_lbd'] = "%.5f" % self.data['num_u_lbd']
+        self.report_data['N'] = "%d" % self.data['N']
+        self.report_data['d'] = "%.5f" % self.data['d']
+        self.report_data['lbd'] = "%.2f" % self.data['lbd']
+        self.report_data['ua_d'] = "%.5f" % self.uncertainty['ua_d']
+        self.report_data['ub_d'] = "%.5f" % self.uncertainty['ub_d']
+        self.report_data['u_d'] = "%.5f" % self.uncertainty['u_d']
+        self.report_data['u_N'] = "%.5f" % self.uncertainty['u_N']
+        self.report_data['u_lbd_lbd'] = "%.5f" % self.uncertainty['u_lbd_lbd']
+        self.report_data['u_lbd'] = "%.5f" % self.uncertainty['u_lbd']
         # 调用ReportWriter类
         RW = Report()
         RW.load_replace_kw(self.report_data)

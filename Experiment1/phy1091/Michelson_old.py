@@ -1,10 +1,6 @@
 import xlrd
-# from xlutils.copy import copy as xlscopy
-import shutil
-import os
+import shutil, os, sys
 from numpy import sqrt, abs
-
-import sys
 sys.path.append('..') # 如果最终要从main.py调用，则删掉这句
 from GeneralMethod.PyCalcLib import Method
 from reportwriter.ReportWriter import ReportWriter

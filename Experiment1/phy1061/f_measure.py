@@ -2,7 +2,7 @@ import xlrd
 # from xlutils.copy import copy as xlscopy
 import shutil
 import os
-from numpy import sqrt, abs
+
 
 import sys
 sys.path.append('../..') # 如果最终要从main.py调用，则删掉这句
@@ -147,12 +147,21 @@ class f_measure:
     
    
     def calc_data_1(self):
-         self.data['f1'] = f1
-        list_f1 = [(u_1_1*v_1_1)/(u_1_1+v_1_1),(u_1_2*v_1_2)/(u_1_2+v_1_2),(u_1_3*v_1_3)/(u_1_3+v_1_3),(u_1_4*v_1_4)/(u_1_4+v_1_4)]
-        f_1 = (f1[0]+f1[1]+f1[2]+f1[3])/4
-         self.data['f2'] = f2
-        list_f2 = [(u_2_1*v_2_1)/(u_2_1+v_2_1),(u_2_2*v_2_2)/(u_2_2+v_2_2),(u_2_3*v_2_3)/(u_2_3+v_2_3),(u_2_4*v_2_4)/(u_2_4+v_2_4)]
-        f_2 = (f2[0]+f2[1]+f2[2]+f2[3])/4
+        self.data['f_1'] = f_1
+        self.data['list_f1'] = list_f1
+        list_f1 = [(list_u_1[0]*list_v_1[0])/(list_u_1[0]+list_v_1[0]) , 
+                (list_u_1[1]*list_v_1[1])/(list_u_1[1]+list_v_1[1]) , 
+                (list_u_1[2]*list_v_1[2])/(list_u_1[2]+list_v_1[2]) ,
+                (list_u_1[3]*list_v_1[3])/(list_u_1[3]+list_v_1[3])]
+        f_1 = (list_f1[0] + list_f1[1] + list_f1[2] + list_f1[3])/4
+            
+        self.data['f_2'] = f_2
+        self.data['list_f2'] = list_f2
+        list_f2 = [(list_u_2[0]*list_v_2[0])/(list_u_2[0]+list_v_2[0]) , 
+                (list_u_2[1]*list_v_2[1])/(list_u_2[1]+list_v_2[1]) , 
+                (list_u_2[2]*list_v_2[2])/(list_u_2[2]+list_v_2[2]) ,
+                (list_u_2[3]*list_v_2[3])/(list_u_2[3]+list_v_2[3])]
+        f_2 = (list_f2[0] + list_f2[1] + list_f2[2] + list_f2[3])/4
 
     def calc_data_2(self):
         i = 0
@@ -181,10 +190,12 @@ class f_measure:
 
 
     def calc_uncertainty_2(self):
+        num_u_f = 0
         self.data["num_u_f"] = num_u_f
         num_u_f = Method.a_uncertainty(self.data['list_f'])
 
     def calc_uncertainty_3(self):
+        u_3_f = 0
         self.data["u_3_f"] = u_3_f
         u_3_f = Method.a_uncertainty(self.data['list_3_f'])
 

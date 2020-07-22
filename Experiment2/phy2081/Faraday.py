@@ -8,7 +8,7 @@ o_path = os.path.abspath(os.path.join(os.getcwd(), "../..")) # 调用库需要�
 sys.path.append(o_path) # 如果最终要从main.py调用，则删掉这句
 
 from GeneralMethod.PyCalcLib import Method, Fitting
-from reportwrite.ReportWriter import ReportWriter
+from GeneralMethod.Report import Report
 
 
 class Faraday:
@@ -31,7 +31,7 @@ class Faraday:
     PREVIEW_FILENAME = "Preview.pdf"
     DATA_SHEET_FILENAME = "data.xlsx"
     REPORT_TEMPLATE_FILENAME = "Faraday_empty.docx"
-    REPORT_OUTPUT_FILENAME = "Faraday_out.docx"
+    REPORT_OUTPUT_FILENAME = "../../Report/Experiment2/2081Report.docx"
 
     def __init__(self):
         self.data = {} # 存放实验中的各个物理量
@@ -169,7 +169,7 @@ class Faraday:
 
     '''
     填充实验报告
-    调用ReportWriter类，将数据填入Word文档格式的实验报告中
+    调用Report类，将数据填入Word文档格式的实验报告中
     '''
     def fill_report(self):
         # 表格：1原始数据
@@ -204,8 +204,8 @@ class Faraday:
         self.report_data['u_V4'] = "%.3f" % self.data['u_V4']
         self.report_data['u_Vavg'] = "%.4f" % self.data['u_Vavg']
         self.report_data['V_avg'] = "%.3f" % self.data['V_avg']
-        # 调用ReportWriter类
-        RW = ReportWriter()
+        # 调用Report类
+        RW = Report()
         RW.load_replace_kw(self.report_data)
         RW.fill_report(self.REPORT_TEMPLATE_FILENAME, self.REPORT_OUTPUT_FILENAME)
 

@@ -2,7 +2,7 @@ import xlrd
 # from xlutils.copy import copy as xlscopy
 import shutil
 import os
-from numpy import sqrt, abs
+from numpy import sqrt, abs, sin, asin
 
 import sys
 sys.path.append('..') # 如果最终要从main.py调用，则删掉这句
@@ -66,13 +66,13 @@ class Velocity:
         ws = xlrd.open_workbook(filename).sheet_by_name('Velocity')
         list_f_s = []
         for row in [3]:
-            for col in range(1, 9):
+            for col in range(2, 10):
                 list_f_s.append(float(ws.cell_value(row, col))) 
         self.data['list_f_s'] = list_f_s 
     
         list_phi_0 = []
         for row in [4]:
-            for col in range(1, 9):
+            for col in range(2, 10):
                 list_phi_0.append(float(ws.cell_value(row, col))) 
         self.data['list_phi_0'] = list_phi_0
     
@@ -93,7 +93,7 @@ class Velocity:
     def calc_data(self):
         list_phi_1 = []
         i = 0
-        for i < 8:
+        while i < 8:
             list_phi_1[i] = asin(sin(list_phi_0[i]) / num_n)
             i = i + 1
         self.data['list_phi_1'] = list_phi_1

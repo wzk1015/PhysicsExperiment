@@ -80,7 +80,7 @@ class Parallel:
         
         #1062_1
         f_0 = 0
-        f_0 = (float(ws.cell_value(1, 1)))
+        f_0 = float(ws.cell_value(1, 1))
         self.data['f_0'] = f_0
 
         list_y = []
@@ -96,7 +96,7 @@ class Parallel:
         self.data['list_y_1'] = list_y_1 # 存储从表格中读入的数据
 
         delta_yi = 0
-        delta_yi = (float(ws.cell_value(4, 1)))
+        delta_yi = float(ws.cell_value(4, 1))
         self.data['delta_yi'] = delta_yi
 
         #1062_2
@@ -136,13 +136,13 @@ class Parallel:
 
         i = 0
         f_1_a = 0
-        for i < 8 :
+        while i < 8 :
             f_1_a = f_1_a + (list_f_1[i] / list_u[i] ^2)
             i = i+1
 
         i = 0
         f_1_b = 0
-        for i < 8 :
+        while i < 8 :
             f_1_b = f_1_b + (1 / list_u[i] ^2)
             i = i+1
         
