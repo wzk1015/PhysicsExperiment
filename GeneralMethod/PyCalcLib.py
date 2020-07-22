@@ -689,9 +689,14 @@ class Method:
         unc_final, pwr = Method.scientific_notation(unc)
         res_final = round(res / float(10 ** pwr), 0)
         unc_final = round(unc_final, 0)
-        res_final = round(res_final * (10 ** pwr), -pwr)
-        unc_final = round(unc_final * (10 ** pwr), -pwr)
-        final = '(' + str(res_final) + '±' + str(unc_final) + ')'
+        if pwr < 0:
+            res_final = round(res_final * (10 ** pwr), -pwr)
+            unc_final = round(unc_final * (10 ** pwr), -pwr)
+            final = '(' + str(res_final) + '±' + str(unc_final) + ')'
+        else:
+            res_final = res_final / 10
+            unc_final = unc_final / 10
+            final = "(%.1f±%.1f)×10(%d)" % (res_final, unc_final, pwr + 1)
         return final
 
     '''
@@ -707,3 +712,20 @@ class Method:
             os.startfile(os.path.abspath(file_path))
         except:
             subprocess.call(["open", os.path.abspath(file_path)])
+
+    '''
+    角度转换方法
+    @param
+    degree: 角度的字符串表示，度和分之间以空格隔开
+    @return
+    degree_value: float形式的角度，单位为度
+    '''
+    @staticmethod
+    def degree_trans(degree):
+        degree_list = degree.split(' ')
+        if len(degree_list) == 1:
+            return eval(degree)
+        elif len(degree_list) == 2:
+            return float(eval(degree_list[0])) + float(eval(degree_list[1]) / 60.0)
+        else:
+            return False

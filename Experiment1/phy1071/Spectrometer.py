@@ -77,23 +77,6 @@ class Spectrometer:
         self.data['list_data'] = list_data  # 存储从表格中读入的数据
 
     '''
-    自定义角度转换方法，考虑是否需要加入到通用工具
-    @param
-    degree: 角度的字符串表示，度和分之间以空格隔开
-    @return
-    degree_value: float形式的角度，单位为度
-    '''
-    @staticmethod
-    def degree_trans(degree):
-        degree_list = degree.split(' ')
-        if len(degree_list) == 1:
-            return eval(degree)
-        elif len(degree_list) == 2:
-            return float(eval(degree_list[0])) + float(eval(degree_list[1]) / 60.0)
-        else:
-            return False
-
-    '''
     数据处理总函数，调用三个实验的数据处理函数
     '''
     def calc_data(self):
@@ -111,7 +94,7 @@ class Spectrometer:
         for rows in self.data['list_data'][0]:
             row = []
             for item in rows:
-                value_degree = self.degree_trans(item)
+                value_degree = Method.degree_trans(item)
                 if (value_degree > 1000) | (value_degree < -1000):
                     print('数据出现错误，请检查实验表格第'
                           + str(self.data['list_data'].index(rows) + 4) + '行第' + str(rows.index(item) + 2)
@@ -136,7 +119,7 @@ class Spectrometer:
         for rows in self.data['list_data'][1]:
             row = []
             for item in rows:
-                value_degree = self.degree_trans(item)
+                value_degree = Method.degree_trans(item)
                 if (value_degree > 1000) | (value_degree < -1000):
                     print('数据出现错误，请检查实验表格第'
                           + str(self.data['list_data'].index(rows) + 4) + '行第' + str(rows.index(item) + 8)
@@ -163,7 +146,7 @@ class Spectrometer:
         for rows in self.data['list_data'][2]:
             row = []
             for item in rows:
-                value_degree = self.degree_trans(item)
+                value_degree = Method.degree_trans(item)
                 if (value_degree > 1000) | (value_degree < -1000):
                     print('数据出现错误，请检查实验表格第'
                           + str(self.data['list_data'].index(rows) + 4) + '行第' + str(rows.index(item) + 14)
@@ -230,8 +213,6 @@ class Spectrometer:
         part_4 = (cos(self.data['aver_A'] / 180 * pi) + sin(self.data['aver_delta'] / 180 * pi)) / sin(self.data['aver_A'] / 180 * pi)
         n_delta = cos(self.data['aver_delta'] / 180 * pi) * part_4 / self.data['n2']
         n_A = part_1 * part_4 / self.data['n2']
-        print(n_delta)
-        print(n_A)
         u_n2 = sqrt((n_delta * u_delta / 180 * pi) ** 2 + (n_A * self.data['u_A'] / 180 * pi) ** 2)
         self.data['u_n2'] = u_n2
         self.data['final_n2'] = Method.final_expression(self.data['n2'], u_n2)
