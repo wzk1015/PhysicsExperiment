@@ -672,7 +672,7 @@ class Method:
     def scientific_notation(x):
         if x == 0:
             return 0, 0
-        pwr = int(floor(log10(x)))
+        pwr = int(floor(log10(abs(x))))
         base = x / (10 ** pwr)
         return base, pwr
     '''
