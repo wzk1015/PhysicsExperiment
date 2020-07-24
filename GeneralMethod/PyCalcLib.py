@@ -692,11 +692,16 @@ class Method:
         if pwr < 0:
             res_final = round(res_final * (10 ** pwr), -pwr)
             unc_final = round(unc_final * (10 ** pwr), -pwr)
-            final = '(' + str(res_final) + '±' + str(unc_final) + ')'
+            # 3.340 + 0.002 要保留3.340小数第三位的0
+            final = '(' + "%.*f" % (-pwr, res_final) + '±' + str(unc_final) + ')'
         else:
-            res_final = res_final / 10
-            unc_final = unc_final / 10
-            final = "(%.1f±%.1f)×10(%d)" % (res_final, unc_final, pwr + 1)
+            # (1.115 + 0.005)x10(4) 书上23页
+            res_final *= (10 ** pwr)
+            unc_final *= (10 ** pwr)
+            res_final_sci, pwr_sci = Method.scientific_notation(res_final)
+            res_final_sci = res_final_sci 
+            unc_final_sci = unc_final / (10 ** (pwr_sci))
+            final = "(%g±%g)×10(%d)" % (res_final_sci, unc_final_sci, pwr_sci)
         return final
 
     '''
